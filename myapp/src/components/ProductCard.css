@@ -1,0 +1,18 @@
+.productCard {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  width: 15rem;
+  height: 15rem;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+.productCard > img {
+  width: 80%;
+  height: 80%;
+}
+.detail_box {
+  display: flex;
+  justify-content: space-between;
+  background-color: darkgray;
+}

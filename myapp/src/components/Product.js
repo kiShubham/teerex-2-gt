@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import ProductCard from "./ProductCard";
+import "./Product.css";
 
 const Product = () => {
   const [productList, setProductList] = useState([]);
@@ -18,8 +20,29 @@ const Product = () => {
     };
     onload();
   }, []);
+  // console.log(productList);
 
-  return <div>Products</div>;
+  return (
+    <div>
+      <div className="productPage">
+        {productList.length ? (
+          <>
+            <div className="productGrid">
+              {productList.map((item) => {
+                return (
+                  <div key={item.id}>
+                    <ProductCard item={item} />
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Product;
