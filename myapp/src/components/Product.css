@@ -1,8 +1,16 @@
-.productPage {
+.mainPage {
   display: flex;
-
-  padding: 40px;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 40px;
   border: 8px solid rgb(243, 95, 9);
+}
+.productAndSearchbar {
+  border: 2px solid green;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .productGrid {
   padding: 10px;
@@ -11,4 +19,15 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
+}
+.filterAndProductGrid {
+  border: 2px dashed yellowgreen;
+  display: flex;
+  /* justify-content: space-around; */
+  gap: 10px;
+}
+.filter {
+  width: 100px;
+  height: 500px;
+  border: 1px solid black;
 }

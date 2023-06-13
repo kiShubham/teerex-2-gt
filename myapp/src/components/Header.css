@@ -1,0 +1,29 @@
+.Header {
+  border: 1px solid black;
+  width: 91.55vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.brand_name {
+  background-color: #71717a;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 4px;
+}
+
+.action_buttons {
+  display: flex;
+  gap: 10px;
+}
+.cartButton,
+.productsButton {
+  background: #000 !important;
+}
+.cartButton,
+.productsButton:hover {
+  /* color: aqua; */
+}
