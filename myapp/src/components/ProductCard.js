@@ -1,6 +1,7 @@
 // import { Box, Typography } from "@mui/material";
 import React from "react";
 import "./ProductCard.css";
+import { Button } from "@mui/material";
 
 const ProductCard = ({ item }) => {
   return (
@@ -11,6 +12,9 @@ const ProductCard = ({ item }) => {
           <p>{item.name}</p>
           <p>{item.price}</p>
         </div>
+        <Button variant="contained" className="AddToCart">
+          ADD TO CART
+        </Button>
       </div>
     </>
   );
