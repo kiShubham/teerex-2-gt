@@ -1,0 +1,14 @@
+.Filter_bar {
+  padding: 50px;
+  width: 200px;
+  height: max-content;
+  /* border: 1px solid brown; */
+  font-size: larger;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+legend {
+  font-weight: bolder;
+  font-size: 20px;
+}
