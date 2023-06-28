@@ -31,11 +31,11 @@ const Checkout = () => {
   }, []);
 
   const getCartItem = (productData) => {
-    let tempCart = localStorage.getItem("cartArray"); // for getting the array back (its currnt string format);
+    let tempCart = localStorage.getItem("cartArray");
     let tempDetail = JSON.parse(tempCart); //
     // console.log(tempDetail);
 
-    if (!tempDetail) return; // dont write !tempDetail.length as it will give error as tempCart will undefined if no products added and so for tempDetail ;
+    if (!tempDetail) return; // not writing !tempDetail.length as it will give error as tempCart will undefined if no products added and so for tempDetail ;
     let cartDetail = tempDetail.map((e) => ({
       ...e,
       ...productData.find((elem) => elem.id === e.ID),
@@ -97,21 +97,11 @@ const Checkout = () => {
       return;
     }
     let arr = [...cart];
-    let object = { ...item }; //copying the item obj ,for update
+    let object = { ...item };
     // console.log(object);
-    // console.log("oldArray");
-    // console.log(cart);
-
-    /**
-     * task => item.Qty ko increase dec karna h ;
-     * pehle check karna h ki available quantity ko cross na kare(for increase);
-     * fir item ka QTY inc / dec kar do ;arr array mai ,cartarray m nhi;
-     * then finally setcart(arr);cartArray ko update kardo;
-     * search obj in arr , replace with splice,splice to replace old obje with new obj;in cart;
-     */
     let currQty = object.QTY;
     if (i === true) {
-      object.QTY = currQty + 1; //working ;
+      object.QTY = currQty + 1;
     }
     if (i === false) {
       object.QTY = currQty - 1;
