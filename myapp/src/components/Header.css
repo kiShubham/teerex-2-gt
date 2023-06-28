@@ -1,5 +1,6 @@
 .Header {
   border: 1px solid black;
+  border-radius: 6px;
   width: 91.55vw;
   display: flex;
   justify-content: space-between;
@@ -10,7 +11,7 @@
 .brand_name {
   background-color: #71717a;
   color: white;
-  padding: 6px 16px;
+  padding: 8px 16px;
   border-radius: 4px;
 }
 
@@ -18,11 +19,25 @@
   display: flex;
   gap: 10px;
 }
-.cartButton,
-.productsButton {
+.cartButton {
   background: #000 !important;
+  color: gold !important;
 }
-.cartButton,
-.productsButton:hover {
-  /* color: aqua; */
+.productsButton {
+  color: #000 !important;
+  border-color: black !important;
+}
+
+@media screen and (max-width: 398px) {
+  .Header {
+    border: 1px solid black;
+    border-radius: 6px;
+    /* width: 91.55vw; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    align-items: flex-start;
+    padding: 10px;
+  }
 }

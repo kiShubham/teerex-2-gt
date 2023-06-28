@@ -2,31 +2,34 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import "./Product.css";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import Header from "./Header";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
+import { enqueueSnackbar } from "notistack";
 
 const Product = () => {
   const [productList, setProductList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [colorArray, setColorArray] = useState([]);
-  const [genderArray, setGenderArray] = useState([]);
-  const [priceArray, setPriceArray] = useState([]);
-  const [typeArray, setTypeArray] = useState([]);
-  const [filterInput, setFilterInput] = useState([]);
+  const [filterIconBool, setFilterIconBool] = useState(false);
+  const [cart, setCart] = useState([]);
 
   const fetchProduct = async () => {
-    let res = await axios(
-      "https://geektrust.s3.ap-southeast-1.amazonaws.com/coding-problems/shopping-cart/catalogue.json"
-    );
-    if (res && res.data) {
+    try {
+      let res = await axios(
+        "https://geektrust.s3.ap-southeast-1.amazonaws.com/coding-problems/shopping-cart/catalogue.json"
+      );
       setProductList(res.data);
       return res.data;
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar(
+        "Could not fetch products. check that the backend running, reachable and returns valid JSON.",
+        { variant: "error" }
+      );
+      return null;
     }
-
-    //also write for failure
   };
   useEffect(() => {
     const onload = async () => {
@@ -34,6 +37,8 @@ const Product = () => {
       setFilteredList(productData);
     };
     onload();
+    if (!localStorage.getItem("cartArray"))
+      localStorage.setItem("cartArray", "[]");
   }, []);
 
   const checkDuplicateElement = (majorArray, subArray) => {
@@ -49,7 +54,7 @@ const Product = () => {
     return majorArray;
   };
   /*
-   * search bar logic -->
+   todo: search bar logic -->
    */
 
   const captureSearchtext = (e) => {
@@ -82,7 +87,6 @@ const Product = () => {
         return false;
       });
       result = checkDuplicateElement(result, temp);
-      // result.push(...temp); // pushing all elements of temp into result;
       console.log(result);
     });
 
@@ -90,44 +94,87 @@ const Product = () => {
       setFilteredList(result);
     } else setFilteredList([]);
   };
+  const filterIconHandle = () => {
+    if (!filterIconBool) setFilterIconBool(true);
+    else setFilterIconBool(false);
+  };
 
   /*
-   * filter Handle logic -->
-   ! todo:
+   todo: filter Handle logic -->
+  */
+  const HandleFilterOutput = (value) => {
+    setFilteredList(value);
+  };
+  const HandleRemoveFilter = () => {
+    setFilteredList(productList);
+  };
+  /*
+   * handleAddtoCart
    */
-
-  let filterPushingFunction = (array, checks) => {
-    if (array.includes(checks)) {
-      let idx = array.indexOf(checks);
-      array.splice(idx, 1);
-    } else {
-      array.splice(array.length, 0, checks);
-    }
-    return array;
-  };
-
-  const filterColorHandler = (e) => {
-    let checks = e.target.name;
-    filterPushingFunction(colorArray, checks);
-    console.log(colorArray);
-    let result = [];
-    //now filter an array of products that matches color with ;
-    colorArray.forEach((elem) => {
-      let temp = [];
-      temp = productList.filter((e) => {
-        if (e.color === elem) return true;
+  const handleAddtoCart = (item) => {
+    // console.log(item.id);
+    if (item.quantity === 0) {
+      enqueueSnackbar("Sorry! the product is not available", {
+        variant: "warning",
       });
-      temp.forEach((e) => result.push(e));
-    });
-    // console.log(result);
-    if (result.length) {
-      //compare with existing filteredList;
-      setFilteredList(result);
-    } else setFilteredList(productList);
+      return 0;
+    }
+    console.log(cart);
+    let arr = [...cart];
+    let obj = { ID: item.id, QTY: 1 };
+
+    let availableQuantity = item.quantity;
+
+    if (!arr.length) {
+      arr.push(obj);
+    } else {
+      let found = false;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].ID === obj.ID) {
+          found = true;
+          console.log("already exists:" + item.id);
+          if (arr[i].QTY < availableQuantity) {
+            arr[i].QTY = arr[i].QTY + 1;
+          } else {
+            enqueueSnackbar("Maximum limit reached,for particular product", {
+              variant: "warning",
+            });
+          }
+          break;
+        }
+      }
+      if (found === false) {
+        arr.push(obj);
+      }
+    }
+
+    // ! checking if the item already exist in the localStorage Array ;
+
+    let existstroage = localStorage.getItem("cartArray");
+    let existArr = JSON.parse(existstroage);
+
+    let temp = [];
+    for (let i = 0; i < existArr.length; i++) {
+      let found = false;
+      for (let j = 0; j < arr.length; j++) {
+        if (existArr[i].ID === arr[j].ID) {
+          found = true;
+        }
+      }
+      if (found === false) {
+        if (!temp.includes(existArr[i])) temp.push(existArr[i]);
+      }
+    }
+    temp.forEach((e) => arr.push(e));
+    let string = JSON.stringify(arr);
+    if (temp.length > 0) {
+      localStorage.setItem("cartArray", string);
+    } else {
+      localStorage.setItem("cartArray", string);
+    }
+    // console.log(arr);
+    setCart(arr);
   };
-  const filterTypeHandler = (e) => {};
-  const filterGenderHandler = (e) => {};
-  const filterPriceHandler = (e) => {};
 
   return (
     <div>
@@ -136,38 +183,46 @@ const Product = () => {
           <Header />
         </header>
         <section className="productAndSearchbar">
-          <Box>
-            <SearchBar searchText={captureSearchtext} />
+          <Box className="searchAndFilterbutton">
+            <SearchBar
+              searchText={captureSearchtext}
+              showFilter={filterIconHandle}
+            />
           </Box>
-          {filteredList.length ? (
-            <>
-              <Box className="filterAndProductGrid">
-                <aside className="filter">
-                  <Filter
-                    applyColorFilter={filterColorHandler}
-                    applyTypeFilter={filterTypeHandler}
-                    applyGenderFilter={filterGenderHandler}
-                    applyPriceFilter={filterPriceHandler}
-                  />
-                </aside>
+
+          <Box className="filterAndProductGrid">
+            <aside
+              className={filterIconBool ? "filter_desktop" : "filter_mobile"}
+            >
+              <Filter
+                handleRemoveFilter={HandleRemoveFilter}
+                HandleFilterOutput={HandleFilterOutput}
+                productList={productList}
+              />
+            </aside>
+            {filteredList.length ? (
+              <>
                 <div className="productGrid">
                   {filteredList.map((item) => {
                     return (
                       <div key={item.id}>
-                        <ProductCard item={item} />
+                        <ProductCard
+                          item={item}
+                          handleAddtoCart={handleAddtoCart}
+                        />
                       </div>
                     );
                   })}
                 </div>
-              </Box>
-            </>
-          ) : (
-            <>
-              <section className="noProducts">
-                Sorry No Products Find 🙁
-              </section>
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                <section className="noProducts">
+                  Sorry No Products Find 🙁
+                </section>
+              </>
+            )}
+          </Box>
         </section>
       </div>
     </div>
@@ -175,76 +230,3 @@ const Product = () => {
 };
 
 export default Product;
-/**
- let result = [];
-    filterInput.forEach((element) => {
-      let temp = filteredList.filter((e) => {
-        let colorFilter = e.color.includes(element); //boolean value;
-        let typeFilter = e.type.includes(element);
-        let genderFilter = e.gender.includes(element);
-
-        if (colorFilter) return true;
-        else if (typeFilter) return true;
-        else if (genderFilter) return true;
-      });
-      temp.forEach((e) => {
-        let bool = false;
-        result.forEach((elem) => {
-          if (elem.id === e.id) {
-            bool = true;
-          }
-        });
-        if (bool === false) result.push(e);
-      });
-    });
-    console.log(result);
-    if (result.length) {
-      setFilteredList(result);
-    } else setFilteredList([]);
- */
-/*
-    const filterHandler = (e) => {
-      // let filterArray = JSON.parse(JSON.stringify(filterInput));
-  
-      let checks = e.target.name;
-  
-      if (filterInput.includes(checks)) {
-        let idx = filterInput.indexOf(checks);
-        filterInput.splice(idx, 1);
-      } else {
-        filterInput.splice(filterInput.length, 0, checks);
-      }
-  
-      if (filterInput.length === 0 && searchTerm.length === 0) {
-        setFilteredList(productList);
-        return;
-      } else if (filterInput.length === 0 && searchTerm.length !== 0) {
-        // capturesearchtext(searchTerm) ,e.target.value = search term;
-      }
-      let result = [];
-      let tempList = [];
-      if (searchTerm) tempList = [...filteredList];
-      else tempList = [...productList];
-  
-      console.log(filterInput);
-      filterInput.forEach((elem) => {
-        let temp;
-        if (elem === "0-250" || elem === "251-450" || elem === "451-500") {
-          let range = elem.split("-"); //["0","250"]
-          temp = tempList.filter((e) => {
-            if (range[0] <= e.price && e.price <= range[1]) return true;
-          });
-        } else {
-          temp = tempList.filter((e) => {
-            if (e.color === elem) return true;
-            else if (e.type === elem) return true;
-            else if (e.gender === elem) return true;
-          });
-        }
-        result = checkDuplicateElement(result, temp);
-      });
-      if (result.length) {
-        setFilteredList(result);
-      }
-    };
-    */

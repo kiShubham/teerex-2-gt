@@ -1,14 +1,98 @@
-.Filter_bar {
-  padding: 50px;
-  width: 200px;
-  height: max-content;
-  /* border: 1px solid brown; */
+Typography {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+.filterOptions {
+  /* border: 2px solid brown; */
+  width: 150px;
+  height: 130px;
   font-size: larger;
+}
+
+.filterOptions > div > label {
+  font-size: larger;
+}
+
+.action_buttons_filters {
+  gap: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
-legend {
-  font-weight: bolder;
-  font-size: 20px;
+.action_buttons_filters > Button {
+  background: #000 !important;
+  letter-spacing: 5px;
+  width: 100%;
+}
+.Filter_bar {
+  background-image: linear-gradient(
+    to right,
+    #ff8177 0%,
+    #ff867a 0%,
+    #ff8c7f 21%,
+    #f99185 52%,
+    #cf556c 78%,
+    #b12a5b 100%
+  );
+  border-radius: 7px;
+  margin-bottom: 10px;
+}
+.action_buttons_filters {
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+@media screen and (min-width: 786px) {
+  .Filter_bar {
+    padding: 20px;
+    width: 17vw;
+    height: min-content;
+    /* border: 1.5px solid brown; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+@media screen and (max-width: 785px) {
+  .Filter_bar {
+    margin-top: 10px;
+    padding: 10px 20px;
+    /* width: 17vw; */
+    /* border: 1.5px solid yellowgreen; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: small;
+  }
+  legend {
+    font-weight: bolder;
+    font-size: 14px;
+  }
+  label {
+    color: black;
+    font-size: small;
+  }
+}
+@media screen and (max-width: 455px) {
+  .Filter_bar {
+    margin-top: 10px;
+    padding-left: 20px;
+
+    /* width: 17vw; */
+    /* border: 1.5px solid yellowgreen; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    font-size: small;
+  }
+  .filterOptions {
+    /* border: 2px solid brown; */
+    width: 100px;
+    height: max-content;
+  }
 }
