@@ -1,10 +1,19 @@
-import { TextField, Box } from "@mui/material";
+import { TextField, Box, Button } from "@mui/material";
 import React from "react";
 import "./SearchBar.css";
-const SearchBar = ({ searchText }) => {
+import filterSvg from "../assests/filter.svg";
+
+const SearchBar = ({ searchText, showFilter }) => {
   return (
     <div className="search-bar">
-      <Box>🔍</Box>
+      <Button
+        variant="outlined"
+        onClick={showFilter}
+        style={{ borderColor: "black" }}
+      >
+        <img src={filterSvg} alt="filter" />
+      </Button>
+      <Box style={{ fontSize: "21px" }}>🔍</Box>
       <TextField
         placeholder="Search Products"
         variant="standard"
